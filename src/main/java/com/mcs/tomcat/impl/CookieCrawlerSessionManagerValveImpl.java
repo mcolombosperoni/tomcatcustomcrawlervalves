@@ -9,16 +9,30 @@ public class CookieCrawlerSessionManagerValveImpl extends StandardCrawlerSession
 
     private static final Log log =
             LogFactory.getLog(CookieCrawlerSessionManagerValveImpl.class);
-    private static final String COOKIE_NAME = "enduserip";
+
+    private String ipRequestCookieKey = "enduserip";
 
     public CookieCrawlerSessionManagerValveImpl() {
         super();
     }
 
+    public CookieCrawlerSessionManagerValveImpl(String ipRequestCookieKey) {
+        super();
+        this.ipRequestCookieKey = ipRequestCookieKey;
+    }
+
     @Override
     protected String getRemoteAddress(Request request) {
-        final String realUserIp = CrawlerSessionManagerValveUtils.findCookieByName(request, COOKIE_NAME);
+        final String realUserIp = CrawlerSessionManagerValveUtils.findCookieByName(request, this.ipRequestCookieKey);
         final boolean cookieFound = realUserIp != null && !realUserIp.isEmpty();
         return cookieFound ? realUserIp : super.getRemoteAddress(request);
+    }
+
+    public String getIpRequestCookieKey() {
+        return ipRequestCookieKey;
+    }
+
+    public void setIpRequestCookieKey(String ipRequestCookieKey) {
+        this.ipRequestCookieKey = ipRequestCookieKey;
     }
 }
